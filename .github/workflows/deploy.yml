@@ -16,21 +16,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Diagnóstico de archivos
+        # Ahora listamos lo que hay adentro de la subcarpeta para estar seguros
+        run: ls -R calendario-san-jose 
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Quitamos la línea de 'cache' para que no falle si falta el lockfile
+
       - name: Install dependencies
-        run: npm install
+        # Le decimos que trabaje adentro de la carpeta correcta
+        working-directory: calendario-san-jose
+        run: npm install --no-package-lock 
+
       - name: Build
+        # También acá tiene que entrar a la carpeta
+        working-directory: calendario-san-jose
         run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          # Le indicamos que el resultado (dist) está adentro de la subcarpeta
+          path: './calendario-san-jose/dist'
 
   deploy:
     environment:
